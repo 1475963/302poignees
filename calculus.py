@@ -96,4 +96,9 @@ def     floyd_warshall_method(matrix, dump :bool):
             for j in range(len(matrix)):
                 tmp[i][j] = min(tmp[i][j], tmp[i][k] + tmp[k][j])
 
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if tmp[i][j] == float("inf"):
+                tmp[i][j] = 0
+
     return tmp
