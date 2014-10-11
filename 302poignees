@@ -1,0 +1,51 @@
+#!/usr/bin/python3.2
+
+import sys
+import file_parsing as FileParsing, print_data as PrintData, calculus as Calculus, data_processing as DataProcessing
+
+"""
+bonus function, get data then calls all functions for calculus and data processing
+"""
+
+def     bonus(filename :str, first_guy :str, second_guy :str) -> int:
+    data = FileParsing.extract_data(filename)
+    guys = sorted(data.keys())
+    if len(data) == 0 or guys.count(first_guy) < 1 or guys.count(second_guy) < 1:
+        return
+    matrix = Calculus.floyd_warshall_method(Calculus.do_adja_matrix(data, False), False)
+    count = matrix[guys.index(first_guy)][guys.index(second_guy)]
+    DataProcessing.find_target(data, guys, first_guy, second_guy, matrix, count)
+    print("\n", end='')
+    print("{} est relié(e) à {} par le biais de {} ami(e)s".format(first_guy, second_guy, count))
+    return 0
+
+"""
+main function, get data then calls all functions for calculus and data processing
+"""
+
+def     main(filename :str) -> int:
+    data = FileParsing.extract_data(filename)
+    if len(data) == 0:
+        return
+    PrintData.dump_guys(data)
+    matrix1 = Calculus.do_adja_matrix(data, True)
+    PrintData.dump_matrix(matrix1)
+    matrix2 = Calculus.do_square_matrix(matrix1, True)
+    PrintData.dump_matrix(matrix2)
+    matrix3 = Calculus.do_cube_matrix(matrix2, matrix1, True)
+    PrintData.dump_matrix(matrix3)
+    PrintData.dump_matrix(Calculus.floyd_warshall_method(matrix1, True))
+    PrintData.dump_matrix(DataProcessing.do_separation_matrix(data, True))
+    return 0
+
+"""
+entry point
+"""
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        main(sys.argv[1])
+    elif len(sys.argv) == 4:
+        bonus(sys.argv[1], sys.argv[2], sys.argv[3])
+    else:
+        print("USAGE:\t./302poignees filename | filepath")
